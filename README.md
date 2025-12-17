@@ -1,4 +1,6 @@
 # SOLIDWORKS-AI-Hackathon
+### -by Dassault Systèmes 
+### IIT Madras
 
 ---
 
