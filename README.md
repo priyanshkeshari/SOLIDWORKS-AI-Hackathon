@@ -147,46 +147,46 @@ Final score = (#exactly correct images) / (total test images).
 
 ```mermaid
 flowchart LR
-    %% === Training ===
-    B4[Start] --> C[Training Module (YOLOv8m)]
-    C --> C1[Load Pretrained Weights (COCO)]
+    %% Training
+    B4[Start] --> C[Training Module YOLOv8m]
+    C --> C1[Load Pretrained Weights COCO]
     C1 --> C2[Fine-tune on 9000 Images]
     C2 --> C3[Validate on 1000 Images]
-    C3 --> C4[Save Best Model (best.pt)]
+    C3 --> C4[Save Best Model best.pt]
 
-    %% === Inference ===
+    %% Inference
     C4 --> D[Robust Inference Module]
     D --> D1[Load Test Image]
 
-    %% --- TTA Branches ---
-    D1 --> E1[View 1: Original]
-    D1 --> E2[View 2: Horizontal Flip]
-    D1 --> E3[View 3: Vertical Flip]
+    %% TTA Branches
+    D1 --> E1[View 1 Original]
+    D1 --> E2[View 2 Horizontal Flip]
+    D1 --> E3[View 3 Vertical Flip]
 
-    %% --- Parallel Detection ---
-    E1 --> F1[Detect & Count]
-    E2 --> F2[Detect & Count]
-    E3 --> F3[Detect & Count]
+    %% Detection
+    E1 --> F1[Detect and Count]
+    E2 --> F2[Detect and Count]
+    E3 --> F3[Detect and Count]
 
-    %% --- Post-Processing ---
-    F1 --> G[Post-Processing]
+    %% Post Processing
+    F1 --> G[Post Processing]
     F2 --> G
     F3 --> G
 
     G --> G1[Apply Adaptive Thresholds]
-    G1 --> G2[Logic Constraint: Max 4]
+    G1 --> G2[Logic Constraint Max 4]
     G2 --> H[Median Aggregation]
 
-    %% === Output ===
+    %% Output
     H --> I[Final Count Calculation]
     I --> J[Submission CSV]
-    J --> K[Perfect Score: 1.0]
+    J --> K[Perfect Score 1.0]
 
     %% Styling
-    style C fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
-    style D fill:#1e293b,stroke:#4ade80,stroke-width:2px,color:#fff
-    style K fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#000
-```
+    style C fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#ffffff
+    style D fill:#1e293b,stroke:#4ade80,stroke-width:2px,color:#ffffff
+    style K fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#000000
+
 
 ---
 
