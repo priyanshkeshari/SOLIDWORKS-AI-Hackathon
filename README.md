@@ -253,6 +253,7 @@ This project demonstrates how **Robust Statistics** combined with **Deep Learnin
 
 ## 📚 References
 - [YOLOv8 Documentation](https://docs.ultralytics.com/)
+- [ResNet Documentation](https://docs.pytorch.org/vision/main/models/resnet.html)
 - [SOLIDWORKS AI Hackathon](https://unstop.com/hackathons/solidworks-ai-hackathon-iit-madras-1602627)
 - [OpenCV Flip Documentation](https://docs.opencv.org/4.x/d2/de8/group__core__array.html#gaca7be533e3dac7feb70fc60635adf441)
 
