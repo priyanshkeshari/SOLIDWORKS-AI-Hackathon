@@ -202,19 +202,19 @@ Key characteristics of the solution:
 ## 🔧 Usage
 
 ### 🔹 Installation
-`!pip install ultralytics -q`
+-`!pip install ultralytics -q`
 
 ### 🔹 Data Preprocessing
 For preparing features and scaling:\n
-`solid-3-yolo-dataset-preparation.ipynb`
+-`solid-3-yolo-dataset-preparation.ipynb`
 
 ### 🔹 Training
 Run the training notebook:\n
-`solid-3-yolo-training.ipynb`
+-`solid-3-yolo-training.ipynb`
 
 ### 🔹 Inference / Submission
 To generate predictions and submission file:\n
-`solid-3-yolo-inference-submission_4.ipynb`
+-`solid-3-yolo-inference-submission_4.ipynb`
 
 ---
 
