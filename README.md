@@ -148,7 +148,7 @@ Final score = (#exactly correct images) / (total test images).
 ```mermaid
 flowchart LR
     %% === Training ===
-    B4 --> C[Training Module (YOLOv8m)]
+    B4[Start] --> C[Training Module (YOLOv8m)]
     C --> C1[Load Pretrained Weights (COCO)]
     C1 --> C2[Fine-tune on 9000 Images]
     C2 --> C3[Validate on 1000 Images]
@@ -169,7 +169,10 @@ flowchart LR
     E3 --> F3[Detect & Count]
 
     %% --- Post-Processing ---
-    F1 & F2 & F3 --> G[Post-Processing]
+    F1 --> G[Post-Processing]
+    F2 --> G
+    F3 --> G
+
     G --> G1[Apply Adaptive Thresholds]
     G1 --> G2[Logic Constraint: Max 4]
     G2 --> H[Median Aggregation]
@@ -183,8 +186,6 @@ flowchart LR
     style C fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
     style D fill:#1e293b,stroke:#4ade80,stroke-width:2px,color:#fff
     style K fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#000
-
-
 
 ---
 
