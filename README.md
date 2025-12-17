@@ -202,6 +202,7 @@ Key characteristics of the solution:
 ## 🔧 Usage
 
 ### 🔹 Installation
+Install the library
 <br>
 `!pip install ultralytics -q`
 
