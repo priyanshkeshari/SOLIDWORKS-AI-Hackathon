@@ -211,8 +211,9 @@ For preparing features and scaling:
 `solid-3-yolo-dataset-preparation.ipynb`
 
 ### 🔹 Training
-Run the training notebook:\n
--`solid-3-yolo-training.ipynb`
+Run the training notebook:
+<br>
+`solid-3-yolo-training.ipynb`
 
 ### 🔹 Inference / Submission
 To generate predictions and submission file:
