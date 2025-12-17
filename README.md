@@ -145,42 +145,45 @@ Final score = (#exactly correct images) / (total test images).
 
 ## ➡️ Flowchart
 
-%% === Training ===
-B4 --> C[**Training Module (YOLOv8m)**]
-C --> C1[Load Pretrained Weights (COCO)]
-C1 --> C2[Fine-tune on 9000 Images]
-C2 --> C3[Validate on 1000 Images]
-C3 --> C4[Save Best Model (best.pt)]
+```mermaid
+flowchart LR
+    %% === Training ===
+    B4 --> C[Training Module (YOLOv8m)]
+    C --> C1[Load Pretrained Weights (COCO)]
+    C1 --> C2[Fine-tune on 9000 Images]
+    C2 --> C3[Validate on 1000 Images]
+    C3 --> C4[Save Best Model (best.pt)]
 
-%% === Inference ===
-C4 --> D[**Robust Inference Module**]
-D --> D1[Load Test Image]
+    %% === Inference ===
+    C4 --> D[Robust Inference Module]
+    D --> D1[Load Test Image]
 
-%% --- TTA Branches ---
-D1 --> E1[View 1: Original]
-D1 --> E2[View 2: Horizontal Flip]
-D1 --> E3[View 3: Vertical Flip]
+    %% --- TTA Branches ---
+    D1 --> E1[View 1: Original]
+    D1 --> E2[View 2: Horizontal Flip]
+    D1 --> E3[View 3: Vertical Flip]
 
-%% --- Parallel Detection ---
-E1 --> F1[Detect & Count]
-E2 --> F2[Detect & Count]
-E3 --> F3[Detect & Count]
+    %% --- Parallel Detection ---
+    E1 --> F1[Detect & Count]
+    E2 --> F2[Detect & Count]
+    E3 --> F3[Detect & Count]
 
-%% --- Post-Processing ---
-F1 & F2 & F3 --> G[**Post-Processing**]
-G --> G1[Apply Adaptive Thresholds]
-G1 --> G2[Logic Constraint: Max 4]
-G2 --> H[**Median Aggregation**]
+    %% --- Post-Processing ---
+    F1 & F2 & F3 --> G[Post-Processing]
+    G --> G1[Apply Adaptive Thresholds]
+    G1 --> G2[Logic Constraint: Max 4]
+    G2 --> H[Median Aggregation]
 
-%% === Output ===
-H --> I[Final Count Calculation]
-I --> J[**Submission CSV**]
-J --> K[**Perfect Score: 1.0**]
+    %% === Output ===
+    H --> I[Final Count Calculation]
+    I --> J[Submission CSV]
+    J --> K[Perfect Score: 1.0]
 
-%% Styling
-style C fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
-style D fill:#1e293b,stroke:#4ade80,stroke-width:2px,color:#fff
-style K fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#000
+    %% Styling
+    style C fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
+    style D fill:#1e293b,stroke:#4ade80,stroke-width:2px,color:#fff
+    style K fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#000
+
 
 
 ---
