@@ -144,7 +144,7 @@ Final score = (#exactly correct images) / (total test images).
 ---
 
 ## ➡️ Flowchart
-<br>
+```md
 ```mermaid
 flowchart LR
     %% Training
@@ -186,6 +186,7 @@ flowchart LR
     style C fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#ffffff
     style D fill:#1e293b,stroke:#4ade80,stroke-width:2px,color:#ffffff
     style K fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#000000
+```
 
 ---
 
