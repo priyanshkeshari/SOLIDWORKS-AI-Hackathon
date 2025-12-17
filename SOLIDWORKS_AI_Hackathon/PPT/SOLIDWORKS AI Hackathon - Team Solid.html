@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLIDWORKS AI Hackathon - Team Solid</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            overflow-x: hidden;
+        }
+        .slide {
+            width: 960px;
+            height: 540px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        /* Dark Theme */
+        .slide {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #38bdf8;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        h2 {
+            font-size: 2.25rem;
+            color: #38bdf8;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h3 {
+            font-size: 1.5rem;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+        p, li {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .title-slide {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            text-align: center;
+            justify-content: space-around;
+        }
+        .title-slide h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+        .title-slide p {
+            font-size: 1.3rem;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+        .team-info {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .team-info p {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background-color: #1e293b;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #1e293b;
+        }
+        .score-cell {
+            color: #4ade80;
+            font-weight: bold;
+        }
+        .score-perfect {
+            color: #fbbf24;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        ul {
+            margin-left: 40px;
+            margin-top: 15px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .two-column {
+            display: flex;
+            gap: 30px;
+            justify-content: space-between;
+        }
+        .column {
+            flex: 1;
+        }
+        .box {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 0px;
+            margin: 15px 0;
+            border-left: 4px solid #38bdf8;
+        }
+        .code-block {
+            background-color: #020617;
+            padding: 15px;
+            border-radius: 0px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #4ade80;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-left: 4px solid #38bdf8;
+        }
+        .metric {
+            display: inline-block;
+            background-color: #1e293b;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 0px;
+            text-align: center;
+            min-width: 150px;
+        }
+        .metric p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            font-size: 2rem;
+            color: #fbbf24;
+            font-weight: bold;
+        }
+        .architecture-block {
+            background-color: #1e293b;
+            padding: 10px;
+            margin: 8px;
+            border-left: 3px solid #38bdf8;
+            display: inline-block;
+            min-width: 200px;
+        }
+        .architecture-block h4 {
+            color: #38bdf8;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        .architecture-block p {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin: 0;
+        }
+        .footer {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 20px;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+        }
+        .center-content {
+            text-align: center;
+        }
+        strong {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SLIDE 1: TITLE SLIDE -->
+<section class="slide title-slide">
+    <div class="container">
+        <h1>Robust Exact-Match Counting of Mechanical Parts</h1>
+        <p style="font-size: 1.4rem; margin: 15px 0;">via Median-Aggregated YOLOv8 Ensembles</p>
+        
+        <div class="team-info">
+            <h3 style="font-size: 1.5rem; color: #fbbf24; margin: 20px 0;">Team: <strong>solid</strong></h3>
+            <p><strong>Members:</strong> Priyansh Keshari, Hemant Sharma</p>
+            <p><strong>Institution:</strong> Indian Institute of Technology (Indian School of Mines), Dhanbad</p>
+            <p style="color: #4ade80; margin-top: 15px; font-size: 1.1rem;"><strong>Competition:</strong> SOLIDWORKS AI Hackathon @ IIT Madras</p>
+            <p style="color: #94a3b8;">Problem Statement by Dassault Systèmes</p>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 2: PROBLEM STATEMENT -->
+<section class="slide">
+    <div class="container">
+        <h2>Problem Statement & Dataset</h2>
+        <div class="two-column">
+            <div class="column">
+                <h3>Challenge</h3>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Objective:</strong> Count mechanical parts (Bolts, Nuts, Washers, Locating Pins)</li>
+                    <li><strong>Metric:</strong> Exact-Match Accuracy (one error = score 0)</li>
+                    <li><strong>Constraints:</strong> Small objects, high class similarity, occlusion</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3>Dataset</h3>
+                <div class="metric">
+                    <p>Total Images</p>
+                    <div class="metric-value">10,000</div>
+                </div>
+                <div class="metric">
+                    <p>Training</p>
+                    <div class="metric-value">9,000</div>
+                </div>
+                <div class="metric">
+                    <p>Validation</p>
+                    <div class="metric-value">1,000</div>
+                </div>
+                <p style="margin-top: 20px; font-size: 1rem;"><strong>Source:</strong> Synthetic renderings by Dassault Systèmes</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 3: METHODOLOGY EVOLUTION -->
+<section class="slide">
+    <div class="container">
+        <h2>Methodology Evolution: The Research Journey</h2>
+        <p style="text-align: center; margin-bottom: 20px; color: #94a3b8;">Systematic refinement from regression to robust object detection</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>Architecture</th>
+                    <th>Approach</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="color: #38bdf8; font-weight: bold;">1</td>
+                    <td>ResNet50 Regression</td>
+                    <td>Global count estimation</td>
+                    <td class="score-cell">0.9750</td>
+                </tr>
+                <tr>
+                    <td style="color: #38bdf8; font-weight: bold;">2</td>
+                    <td>ResNet50 Multi-Head</td>
+                    <td>Per-class classification (4 FC heads)</td>
+                    <td class="score-cell">0.9921</td>
+                </tr>
+                <tr>
+                    <td style="color: #38bdf8; font-weight: bold;">3</td>
+                    <td>YOLOv8m (Base)</td>
+                    <td>Object detection (localization)</td>
+                    <td class="score-cell">0.9986</td>
+                </tr>
+                <tr>
+                    <td style="color: #38bdf8; font-weight: bold;">4</td>
+                    <td>YOLOv8m + TTA</td>
+                    <td>Default augmentation (failed)</td>
+                    <td class="score-cell">0.9929</td>
+                </tr>
+                <tr>
+                    <td style="color: #fbbf24; font-weight: bold;">5</td>
+                    <td><strong>YOLOv8m + Median</strong></td>
+                    <td><strong>Robust statistical aggregation</strong></td>
+                    <td class="score-perfect">1.0000 ✓</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- SLIDE 4: ARCHITECTURE COMPARISON -->
+<section class="slide">
+    <div class="container">
+        <h2>Architecture Comparison</h2>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+            <div class="architecture-block">
+                <h4>ResNet Regression</h4>
+                <p>Image → ResNet50 → FC(4) → [bolt, nut, pin, washer]</p>
+                <p style="margin-top: 8px; color: #ef4444; font-size: 0.85rem;">❌ No localization</p>
+            </div>
+            <div class="architecture-block">
+                <h4>Multi-Head Classif.</h4>
+                <p>Image → ResNet50 → 4×FC → 4×Argmax</p>
+                <p style="margin-top: 8px; color: #f97316; font-size: 0.85rem;">⚠ Overlap issues</p>
+            </div>
+            <div class="architecture-block">
+                <h4>YOLOv8m Base</h4>
+                <p>Image → YOLOv8m → Boxes → Count</p>
+                <p style="margin-top: 8px; color: #eab308; font-size: 0.85rem;">⚡ Breakthrough</p>
+            </div>
+            <div class="architecture-block">
+                <h4>YOLOv8m + Median</h4>
+                <p>3×Images → YOLOv8m → Median → Final</p>
+                <p style="margin-top: 8px; color: #22c55e; font-size: 0.85rem;">✓ Perfect Score</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 5: MODULAR PIPELINE -->
+<section class="slide">
+    <div class="container">
+        <h2>Modular Pipeline Architecture</h2>
+        <p style="text-align: center; margin-bottom: 20px; color: #94a3b8;">Decoupled, reusable components for flexibility</p>
+        
+        <div class="box" style="border-left-color: #fbbf24;">
+            <h3 style="color: #fbbf24;">Module 1: Data Preparation</h3>
+            <p>• CSV Bounding Boxes → YOLO Format (x_center, y_center, w, h)</p>
+            <p>• 90/10 Train/Validation Split</p>
+            <p>• <strong>Independent</strong> of model (YOLOv8, v9, v10 compatible)</p>
+        </div>
+        
+        <div class="box" style="border-left-color: #4ade80;">
+            <h3 style="color: #4ade80;">Module 2: Training</h3>
+            <p>• <strong>Model:</strong> YOLOv8m | <strong>Epochs:</strong> 20 | <strong>Batch:</strong> 16 | <strong>Imgsz:</strong> 640</p>
+            <p>• Hardware: NVIDIA P100</p>
+        </div>
+        
+        <div class="box" style="border-left-color: #38bdf8;">
+            <h3 style="color: #38bdf8;">Module 3: Flexible Inference</h3>
+            <p>• <strong>Mode A:</strong> Standard (Fast)</p>
+            <p>• <strong>Mode B:</strong> TTA with Low Thresholds</p>
+            <p>• <strong>Mode C:</strong> Median-Voting Ensemble (Most Robust) → <strong style="color: #fbbf24;">WINNER</strong></p>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 6: THE WINNING APPROACH -->
+<section class="slide">
+    <div class="container">
+        <h2>The Winning Approach: Median-Aggregated Ensemble</h2>
+        <p style="text-align: center; margin-bottom: 20px; color: #94a3b8;">How we bridged the 0.002 gap to Perfect Score</p>
+        
+        <div class="box">
+            <h3>Step 1: Test-Time Augmentation (TTA)</h3>
+            <p>Generate 3 independent views of each image:</p>
+            <ul style="margin-left: 30px; margin-top: 10px;">
+                <li><strong>View A:</strong> Original</li>
+                <li><strong>View B:</strong> Horizontal Flip</li>
+                <li><strong>View C:</strong> Vertical Flip</li>
+            </ul>
+        </div>
+        
+        <div class="box">
+            <h3>Step 2: Parallel Inference</h3>
+            <p>YOLOv8m predicts independently for all 3 views</p>
+            <p><strong>Example:</strong> Faint washer seen in Views A & C, missed in B → Votes: [4, 3, 4]</p>
+        </div>
+        
+        <div class="box" style="border-left-color: #fbbf24;">
+            <h3 style="color: #fbbf24;">Step 3: Robust Median Aggregation</h3>
+            <p><strong>Median([4, 3, 4]) = 4</strong> ✓ (Correct)</p>
+            <p style="font-size: 0.95rem; color: #94a3b8; margin-top: 10px;"><strong>Why Median?</strong> Ignores outliers. Mean=3.67 could round wrongly. Max=4 over-counts.</p>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 7: REFINEMENT STRATEGIES -->
+<section class="slide">
+    <div class="container">
+        <h2>Refinement Strategies for Exact-Match Perfection</h2>
+        
+        <div class="box">
+            <h3>A. Error-Driven Adaptive Thresholding</h3>
+            <p>Tuned per-class confidence thresholds based on visual difficulty:</p>
+            <table style="margin-top: 10px;">
+                <tr style="background-color: #1e293b;">
+                    <th style="width: 30%;">Class</th>
+                    <th style="width: 15%;">Threshold</th>
+                    <th style="width: 55%;">Rationale</th>
+                </tr>
+                <tr>
+                    <td><strong>Bolt</strong></td>
+                    <td class="score-cell">0.50</td>
+                    <td>High confidence required; prevents "stick" artifacts</td>
+                </tr>
+                <tr>
+                    <td><strong>Washer</strong></td>
+                    <td class="score-cell">0.15</td>
+                    <td>Low threshold; thin/faint; prioritize Recall</td>
+                </tr>
+                <tr>
+                    <td><strong>Nut</strong></td>
+                    <td class="score-cell">0.35</td>
+                    <td>Balanced precision-recall trade-off</td>
+                </tr>
+                <tr>
+                    <td><strong>Locating Pin</strong></td>
+                    <td class="score-cell">0.35</td>
+                    <td>Balanced; avoid confusion with bolts</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="box">
+            <h3>B. Domain-Specific Logic Constraints</h3>
+            <p><strong>Physics Rule:</strong> Maximum 4 parts per type.</p>
+            <p style="color: #4ade80;">if count > 4: count = 4  ← Final safety net against "ghost" detections</p>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 8: TRAINING DETAILS -->
+<section class="slide">
+    <div class="container">
+        <h2>Training Configuration & Results</h2>
+        <div class="two-column">
+            <div class="column">
+                <h3>Hyperparameters</h3>
+                <div class="box">
+                    <p><strong>Model:</strong> YOLOv8m (Medium)</p>
+                    <p><strong>Epochs:</strong> 20</p>
+                    <p><strong>Batch Size:</strong> 16</p>
+                    <p><strong>Image Size:</strong> 640×640</p>
+                    <p><strong>Optimizer:</strong> Auto (AdamW)</p>
+                    <p><strong>LR (Initial):</strong> 0.01</p>
+                    <p><strong>Hardware:</strong> NVIDIA P100</p>
+                    <p><strong>NMS IOU:</strong> 0.7</p>
+                </div>
+            </div>
+            <div class="column">
+                <h3>Convergence Metrics</h3>
+                <div class="metric">
+                    <p>Final mAP50</p>
+                    <div class="metric-value">~0.99</div>
+                </div>
+                <div class="metric">
+                    <p>Final Precision</p>
+                    <div class="metric-value">~0.99</div>
+                </div>
+                <div class="metric">
+                    <p>Final Recall</p>
+                    <div class="metric-value">~0.99</div>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.95rem; text-align: center; color: #94a3b8;">Strong convergence over 20 epochs</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 9: CORE ALGORITHM (CODE) -->
+<section class="slide">
+    <div class="container">
+        <h2>Core Inference Algorithm</h2>
+        <p style="text-align: center; color: #94a3b8; margin-bottom: 15px;">The logic that achieved perfect score (Score: 1.0)</p>
+        <div class="code-block" style="font-size: 0.8rem; max-height: 380px; overflow-y: auto;">
+# Adaptive Thresholds (Tuned via Failure Analysis)<br>
+THRESHOLDS = {<br>
+&nbsp;&nbsp;'bolt': 0.50,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# High precision for distinct bolts<br>
+&nbsp;&nbsp;'washer': 0.15,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# High recall for faint washers<br>
+&nbsp;&nbsp;'nut': 0.35,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Balanced trade-off<br>
+&nbsp;&nbsp;'locatingpin': 0.35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Balanced trade-off<br>
+}<br>
+<br>
+def predict_robust(model, image_path):<br>
+&nbsp;&nbsp;img = cv2.imread(image_path)<br>
+&nbsp;&nbsp;# TTA: Generate 3 variants<br>
+&nbsp;&nbsp;variants = [img, cv2.flip(img,1), cv2.flip(img,0)]<br>
+&nbsp;&nbsp;votes = {k: [] for k in THRESHOLDS.keys()}<br>
+<br>
+&nbsp;&nbsp;for variant in variants:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;results = model(variant, verbose=False, iou=0.6)[0]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;counts = {k: 0 for k in votes.keys()}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for box in results.boxes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cls_name = model.names[int(box.cls)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Apply Adaptive Thresholding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if box.conf >= THRESHOLDS.get(cls_name, 0.25):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;counts[cls_name] += 1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;# Logic Constraint: Max 4 per type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for k in counts:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;votes[k].append(min(counts[k], 4))<br>
+<br>
+&nbsp;&nbsp;# Robust Median Aggregation<br>
+&nbsp;&nbsp;final = {k: int(np.median(v)) for k,v in votes.items()}<br>
+&nbsp;&nbsp;return final
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 10: KEY RESULTS -->
+<section class="slide">
+    <div class="container">
+        <h2>Final Results & Key Insights</h2>
+        
+        <div class="box" style="background-color: #1e293b; border-left: 4px solid #fbbf24;">
+            <h3 style="color: #fbbf24; text-align: center; font-size: 2rem;">FINAL SCORE: 1.0000</h3>
+            <p style="text-align: center; color: #4ade80; font-size: 1.2rem; margin: 10px 0;">✓ Perfect Accuracy (700/700 Test Images)</p>
+        </div>
+        
+        <div class="two-column" style="margin-top: 20px;">
+            <div class="column">
+                <h3>Key Insights</h3>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Localization Matters:</strong> Object Detection (YOLO) vastly outperformed Regression.</li>
+                    <li><strong>Robustness > Speed:</strong> 3× inference overhead justified by perfect score.</li>
+                    <li><strong>Statistics > Heuristics:</strong> Median aggregation more reliable than ad-hoc rules.</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3>Contributions</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Modular, reusable pipeline for counting tasks.</li>
+                    <li>Error-driven threshold tuning methodology.</li>
+                    <li>Median-voting ensemble for discrete predictions.</li>
+                    <li>Demonstrated perfect score in exact-match metric.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDE 11: CONCLUSION -->
+<section class="slide">
+    <div class="container">
+        <h2>Conclusion & Future Directions</h2>
+        
+        <div class="box">
+            <h3>Summary</h3>
+            <p>We successfully developed a <strong>Robust Exact-Match Counting System</strong> for synthetic mechanical parts by combining:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>YOLOv8m</strong> (object detection backbone)</li>
+                <li><strong>Test-Time Augmentation</strong> (3-view ensemble)</li>
+                <li><strong>Median Voting</strong> (robust statistical aggregation)</li>
+                <li><strong>Adaptive Thresholding</strong> (class-specific tuning)</li>
+                <li><strong>Domain Logic</strong> (physics-based constraints)</li>
+            </ul>
+        </div>
+        
+        <div class="box">
+            <h3>Future Work</h3>
+            <ul style="margin-left: 20px;">
+                <li>Extend to real-world industrial images (domain adaptation).</li>
+                <li>Explore ensemble with YOLOv9/v10 for potential robustness gains.</li>
+                <li>Investigate Bayesian uncertainty quantification for confidence calibration.</li>
+            </ul>
+        </div>
+        
+        <p style="text-align: center; margin-top: 30px; font-size: 1.2rem; color: #fbbf24;">
+            <strong>Thank You</strong><br>
+            Team Solid | IIT(ISM) Dhanbad | SOLIDWORKS AI Hackathon @ IIT Madras
+        </p>
+    </div>
+</section>
+
+</body>
+</html>

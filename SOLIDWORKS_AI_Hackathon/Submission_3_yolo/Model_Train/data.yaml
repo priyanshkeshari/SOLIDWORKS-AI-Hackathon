@@ -1,0 +1,9 @@
+
+path: /kaggle/input/solidworks-ai-hackathon-yolo-dataset/yolo_dataset
+train: images/train
+val: images/val
+names:
+  0: bolt
+  1: locatingpin
+  2: nut
+  3: washer
