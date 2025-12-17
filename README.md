@@ -1,5 +1,26 @@
 # SOLIDWORKS-AI-Hackathon
-SOLIDWORKS AI Hackathon, hosted at IIT Madras Mission in this competition is to build a machine learning model that can correctly identify which mechanical parts appear in a synthetic image.
+
+---
+
+## 📌 Project Goal
+
+The goal of this project is to develop a vision system that **counts mechanical parts**—**bolt, locating pin, nut, washer**—in synthetic CAD-rendered images for the **SOLIDWORKS AI Hackathon** at **IIT Madras**, with the evaluation based on **exact‑match accuracy**.  
+
+An image is scored as correct **only if all four predicted counts match ground truth exactly**, making the task highly sensitive to even single off‑by‑one errors.
+
+---
+
+## 📂 Dataset
+
+We use the official competition dataset from the **SOLIDWORKS AI Hackathon**, provided by **Dassault Systèmes**.
+
+- **Images:** 10,000 synthetic renders of mechanical assemblies  
+- **Split:** 9,000 training, 1,000 validation (90/10)  
+- **Resolution:** High‑resolution square renders (~1024×1024)  
+- **Annotations (train only):**
+  - Bounding boxes for each object (`x_min, y_min, x_max, y_max`)
+  - Class label: `bolt`, `locatingpin`, `nut`, `washer`
+- **Test set:** Images only (no labels or boxes); predictions submitted as:
 
 ---
 
