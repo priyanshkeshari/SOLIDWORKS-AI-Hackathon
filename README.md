@@ -1,12 +1,11 @@
 # SOLIDWORKS-AI-Hackathon
 SOLIDWORKS AI Hackathon, hosted at IIT Madras Mission in this competition is to build a machine learning model that can correctly identify which mechanical parts appear in a synthetic image.
 
-
 ---
 
 ## 🎭 Model Architecture
 
-The final solution is a **modular YOLOv8m-based counting system** with **test-time augmentation (TTA)** and **median aggregation**, specifically designed to achieve robust, integer‑accurate counts under the exact‑match metric.[conversation_history:1]
+The final solution is a **modular YOLOv8m-based counting system** with **test-time augmentation (TTA)** and **median aggregation**, specifically designed to achieve robust, integer‑accurate counts under the exact‑match metric.
 
 ### 🔹 Evolution of Architectures
 
@@ -81,6 +80,111 @@ For each test image:
 
 ---
 
+## 📏 Evaluation
+
+### Metric: Exact‑Match Accuracy
+
+For each image, the model outputs four integers:
+
+\[
+($\hat{b}$, $\hat{p}$, $\hat{n}$, $\hat{w}$)
+\]
+
+The prediction is **correct** only if:
+
+\[
+($\hat{b}$, $\hat{p}$, $\hat{n}$, $\hat{w}$) = (b, p, n, w)
+\]
+
+Final score = (#exactly correct images) / (total test images).
+
+- ResNet Regression: **0.9750**  
+- ResNet Multi‑Head: **0.9921**  
+- YOLOv8m Base: **0.9986**  
+- YOLOv8m + naïve TTA: **0.9929**  
+- **YOLOv8m + Median Voting: 1.0000 (Perfect)**
+
+---
+
+## 🔄 Workflow
+
+#### 1️⃣ Data Preparation
+1. **Load Raw Annotations:** Read `train_bboxes.csv` containing image names, class labels, and bounding box coordinates (`x_min`, `y_min`, `x_max`, `y_max`).
+2. **Convert Format:** Transform box coordinates into YOLO format: `(x_center, y_center, width, height)` normalized to [0, 1].
+3. **Generate Labels:** Create individual `.txt` label files for each training image.
+4. **Split Dataset:** Partition images into **90% Training** and **10% Validation** sets.
+
+#### 2️⃣ Training (YOLOv8m)
+1. **Load Pretrained Weights:** Initialize `yolov8m.pt` (COCO-pretrained).
+2. **Configure Training:**
+   - **Epochs:** 20
+   - **Batch Size:** 16
+   - **Image Size:** 640×640
+   - **Optimizer:** Auto (AdamW)
+   - **Learning Rate:** 0.01 (initial)
+3. **Train Model:** Execute training on GPU (e.g., NVIDIA P100).
+4. **Save Best Model:** Store the weights (`best.pt`) with the highest validation mAP.
+
+#### 3️⃣ Robust Inference (TTA + Median Voting)
+1. **Load Test Images:** Iterate through the unlabeled test dataset.
+2. **Generate Views (TTA):** For each image, create 3 versions:
+   - Original
+   - Horizontal Flip
+   - Vertical Flip
+3. **Run Parallel Inference:**
+   - Detect objects in all 3 views using the trained YOLOv8m model.
+   - Apply **Adaptive Thresholds**:
+     - Bolt: 0.50
+     - Washer: 0.15
+     - Nut/Pin: 0.35
+4. **Apply Logic Constraints:** Clip counts for each class to a maximum of 4.
+5. **Aggregate Votes:** Calculate the **median** count across the 3 views for each class to determine the final prediction.
+6. **Generate Submission:** Save the final counts to `submission.csv` in the required format.
+
+---
+
+## ➡️ Flowchart
+
+%% === Training ===
+B4 --> C[**Training Module (YOLOv8m)**]
+C --> C1[Load Pretrained Weights (COCO)]
+C1 --> C2[Fine-tune on 9000 Images]
+C2 --> C3[Validate on 1000 Images]
+C3 --> C4[Save Best Model (best.pt)]
+
+%% === Inference ===
+C4 --> D[**Robust Inference Module**]
+D --> D1[Load Test Image]
+
+%% --- TTA Branches ---
+D1 --> E1[View 1: Original]
+D1 --> E2[View 2: Horizontal Flip]
+D1 --> E3[View 3: Vertical Flip]
+
+%% --- Parallel Detection ---
+E1 --> F1[Detect & Count]
+E2 --> F2[Detect & Count]
+E3 --> F3[Detect & Count]
+
+%% --- Post-Processing ---
+F1 & F2 & F3 --> G[**Post-Processing**]
+G --> G1[Apply Adaptive Thresholds]
+G1 --> G2[Logic Constraint: Max 4]
+G2 --> H[**Median Aggregation**]
+
+%% === Output ===
+H --> I[Final Count Calculation]
+I --> J[**Submission CSV**]
+J --> K[**Perfect Score: 1.0**]
+
+%% Styling
+style C fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
+style D fill:#1e293b,stroke:#4ade80,stroke-width:2px,color:#fff
+style K fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#000
+
+
+---
+
 ## 🌐 Features
 
 Key characteristics of the solution:
@@ -95,38 +199,54 @@ Key characteristics of the solution:
 
 ---
 
-## 📏 Evaluation
+## 🔧 Usage
 
-### Metric: Exact‑Match Accuracy
+### 🔹 Installation
+!pip install ultralytics -q
 
-For each image, the model outputs four integers:
+### 🔹 Data Preprocessing
+For preparing features and scaling:
+solid-3-yolo-dataset-preparation.ipynb
 
-\[
-(\hat{b}, \hat{p}, \hat{n}, \hat{w})
-\]
+### 🔹 Training
+Run the training notebook:
+solid-3-yolo-training.ipynb
 
-The prediction is **correct** only if:
-
-\[
-(\hat{b}, \hat{p}, \hat{n}, \hat{w}) = (b, p, n, w)
-\]
-
-Final score = (#exactly correct images) / (total test images).
-
-- ResNet Regression: **0.9750**  
-- ResNet Multi‑Head: **0.9921**  
-- YOLOv8m Base: **0.9986**  
-- YOLOv8m + naïve TTA: **0.9929**  
-- **YOLOv8m + Median Voting: 1.0000 (Perfect)**[conversation_history:1]
+### 🔹 Inference / Submission
+To generate predictions and submission file:
+solid-3-yolo-inference-submission_4.ipynb
 
 ---
 
-## 🔄 Workflow
+## 📊 Results
 
-### 1️⃣ Data Preparation
+**Benchmark Performance:**
 
-1. Load `train_bboxes.csv` with columns: `image_name, class, x_min, y_min, x_max, y_max`.  
-2. Convert each bounding box to YOLO format `(x_center, y_center, w, h)` normalized by image width/height.  
-3. Write one `.txt` file per image with lines:
+- **Metric:** Exact-Match Accuracy (0/1 Loss)
+- **Final Score:** **1.0000** (700/700 Images Correct)
+
+**Key Insights:**
+- **Localization is King:** Object detection vastly outperformed regression.
+- **Robustness > Speed:** 3x inference time was a worthy trade-off for perfect accuracy.
+- **Domain Logic:** Simple physics constraints (Max 4 parts) prevented hallucinations.
+
+---
+
+## 🎯 Real-World Impact
+This project demonstrates how **Robust Statistics** combined with **Deep Learning** can solve high-precision industrial inspection tasks.
+- **Quality Control:** Automated counting of parts in assembly lines.
+- **Inventory Management:** Precise stock auditing from visual feeds.
+- **Reliability:** The median-voting mechanism ensures the system is resilient to camera noise and occlusions.
+
+---
+
+## 📚 References
+- [YOLOv8 Documentation](https://docs.ultralytics.com/)
+- [SOLIDWORKS AI Hackathon](https://unstop.com/hackathons/solidworks-ai-hackathon-iit-madras-1602627)
+- [OpenCV Flip Documentation](https://docs.opencv.org/4.x/d2/de8/group__core__array.html#gaca7be533e3dac7feb70fc60635adf441)
 
 
+---
+
+## 👨‍💼 Author
+Developed by [Priyansh Keshari](https://github.com/priyanshkeshari) as part of the SOLIDWORKS AI Hackathon by IIT Madras.
