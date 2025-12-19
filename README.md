@@ -28,7 +28,7 @@ We use the official competition dataset from the **SOLIDWORKS AI Hackathon**, pr
 
 ## 🎭 Model Architecture
 
-The final solution is a **modular YOLOv8m-based counting system** with **test-time augmentation (TTA)** and **median aggregation**, specifically designed to achieve robust, integer‑accurate counts under the exact‑match metric.
+The final solution is a **modular YOLOv8s-based counting system** with **test-time augmentation (TTA)** and **median aggregation**, specifically designed to achieve robust, integer‑accurate counts under the exact‑match metric.
 
 ### 🔹 Evolution of Architectures
 
