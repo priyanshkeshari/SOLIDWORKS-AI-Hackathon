@@ -125,7 +125,8 @@ Final score = (#exactly correct images) / (total test images).
 - ResNet Multi‑Head: **0.9921**  
 - YOLOv8m Base: **0.9986**  
 - YOLOv8m + naïve TTA: **0.9929**  
-- **YOLOv8m + Median Voting: 1.0000 (Perfect)**
+- **YOLOv8m + Median Voting: 1.0000**
+- **YOLOv8m + TTA + Median Voting: 1.0000 (Perfect)**
 
 ---
 
