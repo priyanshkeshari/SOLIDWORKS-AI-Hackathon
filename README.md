@@ -35,40 +35,44 @@ The final solution is a **modular YOLOv8m-based counting system** with **test-ti
 1. **ResNet50 Regression**
    - Image → ResNet50 → FC(4) → continuous counts → rounded to integers  
    - Score: **0.9750**  
-   - Issue: No localization; struggled with overlapping parts and dense scenes.[conversation_history:1]
+   - Issue: No localization; struggled with overlapping parts and dense scenes.
 
 2. **ResNet50 Multi‑Head Classification**
    - Shared backbone: ResNet50 (FC removed)  
    - Four independent heads (bolt, pin, nut, washer), each classifying count ∈ {0,…,4}  
    - Score: **0.9921**  
-   - Issue: Still blind to spatial structure; confusion in overlapping objects.[conversation_history:1]
+   - Issue: Still blind to spatial structure; confusion in overlapping objects.
 
 3. **YOLOv8m – Base Detector**
    - Standard object detection: Image → YOLOv8m → detections → count per class  
-   - Training: 20 epochs, batch 16, image size 640, NVIDIA P100 GPU.[conversation_history:1]  
+   - Training: 20 epochs, batch 16, image size 640, NVIDIA P100 GPU.
    - Score: **0.9986**  
    - Breakthrough: Explicit localization solved most errors.
 
 4. **YOLOv8m + naïve TTA**
    - Used `augment=True`, `conf=0.2`, `iou=0.6` directly in Ultralytics inference.  
-   - Score dropped to **0.9929** due to extra false positives (“ghost” parts) from aggressive augmentation.[conversation_history:1]
+   - Score dropped to **0.9929** due to extra false positives (“ghost” parts) from aggressive augmentation.
 
-5. **YOLOv8m + Median Voting (Final)**
+5. **YOLOv8m + Median Voting**
    - Custom TTA + median aggregation + class‑wise thresholds + domain logic.  
-   - Score: **1.0000** – **perfect exact‑match accuracy** on leaderboard.[conversation_history:1]
+   - Score: **1.0000** – **perfect exact‑match accuracy** on leaderboard.
+
+6. **YOLOv8s + TTA + Median Voting (Final)**
+   - Custom TTA + median aggregation + class‑wise thresholds + domain logic.  
+   - Score: **1.0000** – **perfect exact‑match accuracy** on leaderboard.
 
 ---
 
 ## 🧱 Final Model Design
 
-### 1️⃣ Backbone: YOLOv8m
+### 1️⃣ Backbone: YOLOv8s
 
 - **Task:** Detection (`task=detect`)  
 - **Hyperparameters (key):**
-  - `epochs=20`, `batch=16`, `imgsz=640`
+  - `epochs=150`, `batch=32`, `imgsz=640`
   - `lr0=0.01`, `momentum=0.937`, `weight_decay=0.0005`
-  - `hsv_s=0.7`, `hsv_v=0.4`, `mosaic=1.0`, `fliplr=0.5`[conversation_history:1]  
-- Trained on `yolov8m.pt` pretrained weights with full box + class supervision.
+  - `hsv_s=0.7`, `hsv_v=0.4`, `mosaic=1.0`, `fliplr=0.5`
+- Trained on `yolov8s.yaml` scratch trained weights with full box + class supervision.
 
 ### 2️⃣ Robust Inference: TTA + Median Aggregation
 
@@ -85,11 +89,11 @@ For each test image:
      - `bolt`: **0.50** – precise, avoids elongated artifacts  
      - `locatingpin`: **0.35** – intermediate threshold  
      - `nut`: **0.35** – intermediate threshold  
-     - `washer`: **0.15** – permissive to recover low‑contrast thin washers[conversation_history:1]
+     - `washer`: **0.15** – permissive to recover low‑contrast thin washers
 
 3. **Per‑View Logic Constraint**
    - Enforce **maximum of 4** per part type, based on dataset statistics:  
-     `count[class] = min(count[class], 4)`.[conversation_history:1]
+     `count[class] = min(count[class], 4)`.
 
 4. **Median Voting Across Views**
    - For each class, collect 3 counts `[c₁, c₂, c₃]` from the three views.  
@@ -99,7 +103,7 @@ For each test image:
      - **Max** is optimistic and tends to over‑count.  
      - **Median** serves as a **majority vote** for discrete counts; robust to one bad view.
 
-> “With three augmented views, median aggregation acts as a majority‑vote mechanism for counts, improving robustness without introducing over‑count bias.”[conversation_history:1]
+> “With three augmented views, median aggregation acts as a majority‑vote mechanism for counts, improving robustness without introducing over‑count bias.”
 
 ---
 
@@ -137,15 +141,15 @@ Final score = (#exactly correct images) / (total test images).
 3. **Generate Labels:** Create individual `.txt` label files for each training image.
 4. **Split Dataset:** Partition images into **90% Training** and **10% Validation** sets.
 
-#### 2️⃣ Training (YOLOv8m)
-1. **Load Pretrained Weights:** Initialize `yolov8m.pt` (COCO-pretrained).
+#### 2️⃣ Training (YOLOv8s)
+1. **Load Random Weights:** Initialize `yolov8s.yaml`.
 2. **Configure Training:**
-   - **Epochs:** 20
-   - **Batch Size:** 16
+   - **Epochs:** 150
+   - **Batch Size:** 32
    - **Image Size:** 640×640
    - **Optimizer:** Auto (AdamW)
    - **Learning Rate:** 0.01 (initial)
-3. **Train Model:** Execute training on GPU (e.g., NVIDIA P100).
+3. **Train Model:** Execute training on GPU (e.g., NVIDIA T4*2).
 4. **Save Best Model:** Store the weights (`best.pt`) with the highest validation mAP.
 
 #### 3️⃣ Robust Inference (TTA + Median Voting)
@@ -160,9 +164,8 @@ Final score = (#exactly correct images) / (total test images).
      - Bolt: 0.50
      - Washer: 0.15
      - Nut/Pin: 0.35
-4. **Apply Logic Constraints:** Clip counts for each class to a maximum of 4.
-5. **Aggregate Votes:** Calculate the **median** count across the 3 views for each class to determine the final prediction.
-6. **Generate Submission:** Save the final counts to `submission.csv` in the required format.
+4. **Aggregate Votes:** Calculate the **median** count across the 3 views for each class to determine the final prediction.
+5. **Generate Submission:** Save the final counts to `submission.csv` in the required format.
 
 ---
 
@@ -223,8 +226,7 @@ Key characteristics of the solution:
 - **Flexible Inference Modes:**
   - Standard single‑pass YOLO inference (fast, near‑perfect).  
   - Custom TTA + Median Voting (slower but maximally robust).
-- **Domain Constraints:** Hard caps on maximum counts per class (≤4) remove impossible predictions.
-- **Research‑Grade Error Analysis:** Per‑class thresholds and median aggregation were derived through manual inspection of failure modes, not blind grid search.[conversation_history:1]
+- **Research‑Grade Error Analysis:** Per‑class thresholds and median aggregation were derived through manual inspection of failure modes, not blind grid search.
 
 ---
 
@@ -243,12 +245,12 @@ For preparing features and scaling:
 ### 🔹 Training
 Run the training notebook:
 <br>
-`solid-3-yolo-training.ipynb`
+`solid-3-yolo_s_scratch-training.ipynb`
 
 ### 🔹 Inference / Submission
 To generate predictions and submission file:
 <br>
-`solid-3-yolo-inference-submission_4.ipynb`
+`solid-3-yolo_s-inference-submission_5.ipynb`
 
 ---
 
@@ -262,7 +264,7 @@ To generate predictions and submission file:
 **Key Insights:**
 - **Localization is King:** Object detection vastly outperformed regression.
 - **Robustness > Speed:** 3x inference time was a worthy trade-off for perfect accuracy.
-- **Domain Logic:** Simple physics constraints (Max 4 parts) prevented hallucinations.
+- **Domain Logic:** Simple physics constraints prevented hallucinations.
 
 ---
 
@@ -277,7 +279,8 @@ This project demonstrates how **Robust Statistics** combined with **Deep Learnin
 ## 📚 References
 - [YOLOv8 Documentation](https://docs.ultralytics.com/)
 - [ResNet Documentation](https://docs.pytorch.org/vision/main/models/resnet.html)
-- [SOLIDWORKS AI Hackathon](https://unstop.com/hackathons/solidworks-ai-hackathon-iit-madras-1602627)
+- [SOLIDWORKS AI Hackathon Unstop](https://unstop.com/hackathons/solidworks-ai-hackathon-iit-madras-1602627)
+- [SOLIDWORKS AI Hackathon Kaggle](https://www.kaggle.com/competitions/solidworks-ai-hackathon/overview)
 - [OpenCV Flip Documentation](https://docs.opencv.org/4.x/d2/de8/group__core__array.html#gaca7be533e3dac7feb70fc60635adf441)
 
 
