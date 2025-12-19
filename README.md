@@ -84,18 +84,14 @@ For each test image:
    - Vertical flip (`cv2.flip(img, 0)`)
 
 2. **Per‑View Detection**
-   - Run YOLOv8m independently on each view (`iou=0.6`, default NMS).
+   - Run YOLOv8s independently on each view (`iou=0.6`, default NMS).
    - Apply **per‑class confidence thresholds** (tuned via error analysis):
      - `bolt`: **0.50** – precise, avoids elongated artifacts  
      - `locatingpin`: **0.35** – intermediate threshold  
      - `nut`: **0.35** – intermediate threshold  
      - `washer`: **0.15** – permissive to recover low‑contrast thin washers
 
-3. **Per‑View Logic Constraint**
-   - Enforce **maximum of 4** per part type, based on dataset statistics:  
-     `count[class] = min(count[class], 4)`.
-
-4. **Median Voting Across Views**
+3. **Median Voting Across Views**
    - For each class, collect 3 counts `[c₁, c₂, c₃]` from the three views.  
    - Final count = `median(c₁, c₂, c₃)` (integer).  
    - Rationale:
