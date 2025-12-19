@@ -174,7 +174,7 @@ flowchart LR
     %% Training
     B4[Start] --> C[Training Module YOLOv8s]
     C --> C1[Load Random Weights]
-    C1 --> C2[Fine-tune on 9000 Images]
+    C1 --> C2[Train on 9000 Images]
     C2 --> C3[Validate on 1000 Images]
     C3 --> C4[Save Best Model best.pt]
 
