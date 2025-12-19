@@ -156,7 +156,7 @@ Final score = (#exactly correct images) / (total test images).
    - Horizontal Flip
    - Vertical Flip
 3. **Run Parallel Inference:**
-   - Detect objects in all 3 views using the trained YOLOv8m model.
+   - Detect objects in all 3 views using the trained YOLOv8s model.
    - Apply **Adaptive Thresholds**:
      - Bolt: 0.50
      - Washer: 0.15
